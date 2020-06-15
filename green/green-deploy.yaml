@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-production
+spec:
+  selector:
+    matchLabels:
+      app: green-deploy
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: green-deploy
+    spec:
+      containers:
+        - name: green-deploy
+          image: laxgod77/testgreenimage:latest
+          ports:
+            - containerPort: 80

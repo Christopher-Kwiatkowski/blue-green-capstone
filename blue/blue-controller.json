@@ -1,0 +1,37 @@
+{
+  "kind": "ReplicationController",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "blue-deploy",
+    "labels": {
+      "app": "blue-deploy"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "app": "blue-deploy"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "blue-deploy"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "blue-deploy",
+            "image": "laxgod77/testblueimage",
+            "ports": [
+              {
+                "name": "http-server",
+                "containerPort": 80
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

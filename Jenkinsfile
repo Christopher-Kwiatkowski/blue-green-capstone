@@ -1,32 +1,61 @@
 pipeline {
-     agent any
-     stages {
-         stage('Build') {
-             steps {
-                 sh 'echo "Helloo World"'
-                 sh '''
-                     echo "Multiline shell steps works too"
-                     ls -lah
-                 '''
-             }
-         }
-         stage('Lint HTML') {
-              steps {
-                  sh 'tidy -q -e *.html'
-              }
-         }
-         stage('Security Scan') {
-              steps { 
-                 aquaMicroscanner imageName: 'alpine:latest', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
-              }
-         }       
-         stage('Upload to AWS') {
-              steps {
-                  withAWS(region:'us-west-2',credentials:'aws-static') {
-                  sh 'echo "Uploading content with AWS creds"'
-                      s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, file:'index.html', bucket:'static-jenkins-pipeline-christopher-kwiatkowski')
-                  }
-              }
-         }
-     }
+    agent any
+    stages {
+        stage('Lint Dockerfile') {
+            steps {
+                echo "Linting Docker File"
+                retry(2){
+                    sh 'wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.5/hadolint-Linux-x86_64 &&\
+                                chmod +x hadolint'
+                    sh 'make lint'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    echo "Build Docker Image"
+                    dockerImage = docker.build("laxgod77/testblueimage:latest")
+                }
+            }
+        }
+
+        stage('Push to Dockerfile') {
+            steps {
+                script {
+                    echo "Push Docker Image"
+                    retry(2){
+                        docker.withRegistry('', "DockerHub") {
+                            dockerImage.push()
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Deploy blue container and create service') {
+            steps {
+                withAWS(region:'us-west-2', credentials:'aws-static') {
+                    sh 'kubectl config view'
+                    sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstonecluster'
+                    sh 'kubectl apply -f blue/blue-deploy.yaml'
+                    sleep(time:20,unit:"SECONDS")
+                    sh 'kubectl apply -f blue/blue-controller.json'
+                }
+            }
+        }
+        stage('Deploy green container and create service') {
+            steps {
+                withAWS(region:'us-west-2', credentials:'aws-static') {
+                    sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstonecluster'
+                    sh 'kubectl apply -f green/green-deploy.yaml'
+                    sleep(time:20,unit:"SECONDS")
+                    sh 'kubectl apply -f green/green-controller.json '
+                    sh 'kubectl get service/ducks-prod'
+                }
+            }
+        }
+    }
 }
+

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-test
+spec:
+  selector:
+    matchLabels:
+      app: blue-deploy
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: blue-deploy
+    spec:
+      containers:
+        - name: blue-deploy
+          image: laxgod77/testblueimage:latest
+          ports:
+            - containerPort: 80
