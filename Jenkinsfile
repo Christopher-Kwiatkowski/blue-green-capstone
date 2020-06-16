@@ -16,7 +16,8 @@ pipeline {
             steps {
                 script {
                     echo "Build Docker Image"
-                    dockerImage = docker.build("laxgod77/testblueimage",'./blue')
+                    bluedockerImage = docker.build("laxgod77/testblueimage",'./blue')
+                    greendockerImage = docker.build("laxgod77/testgreenimage",'./green')
                     //  docker.build("laxgod77/testblueimage:latest")
                 }
             }
@@ -28,34 +29,41 @@ pipeline {
                     echo "Push Docker Image"
                     retry(2){
                         docker.withRegistry('', "dockerhub") {
-                            dockerImage.push()
+                            bluedockerImage.push()
+                            greendockerImage.push()
                         }
                     }
                 }
             }
         }
 
-        stage('Deploy blue container and create service') {
+        stage('Set kubectl context') {
             steps {
                 withAWS(region:'us-west-2', credentials:'aws-static') {
-                  sh "aws eks --region us-west-2 update-kubeconfig --name capstone"
-                    sh 'kubectl config view'
+                    sh "aws eks --region us-west-2 update-kubeconfig --name capstone"
                     sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstone'
-                    // sh 'kubectl apply -f blue/blue-deploy.yaml'
-                    // sleep(time:20,unit:"SECONDS")
-                    // sh 'kubectl apply -f blue/blue-controller.json'
-                    sh "kubectl apply -f ./blue-controller.json"
                 }
             }
         }
-        stage('Deploy green container and create service') {
+
+        stage('Deploy blue container') {
             steps {
                 withAWS(region:'us-west-2', credentials:'aws-static') {
-                    sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstone'
-                    sh 'kubectl apply -f green/green-deploy.yaml'
-                    sleep(time:20,unit:"SECONDS")
-                    sh 'kubectl apply -f green/green-controller.json '
-                    sh 'kubectl get service/green-prod'
+                    sh "kubectl apply -f ./blue/blue-controller.json"
+                }
+            }
+        }
+        stage('Deploy green container') {
+            steps {
+                withAWS(region:'us-west-2', credentials:'aws-static') {
+                    sh 'kubectl apply -f ./green/green-controller.json'
+                }
+            }
+        }
+        stage('Create service') {
+            steps {
+                withAWS(region:'us-west-2', credentials:'aws-static') {
+                    sh 'kubectl apply -f ./blue-green-service.json'
                 }
             }
         }
