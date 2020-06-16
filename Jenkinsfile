@@ -52,7 +52,7 @@ pipeline {
                     sh 'kubectl apply -f green/green-deploy.yaml'
                     sleep(time:20,unit:"SECONDS")
                     sh 'kubectl apply -f green/green-controller.json '
-                    sh 'kubectl get service/ducks-prod'
+                    sh 'kubectl get service/green-prod'
                 }
             }
         }
