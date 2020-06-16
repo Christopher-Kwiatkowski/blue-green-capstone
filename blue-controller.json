@@ -2,27 +2,27 @@
   "kind": "ReplicationController",
   "apiVersion": "v1",
   "metadata": {
-    "name": "blue-deploy",
+    "name": "blue",
     "labels": {
-      "app": "blue-deploy"
+      "app": "blue"
     }
   },
   "spec": {
     "replicas": 1,
     "selector": {
-      "app": "blue-deploy"
+      "app": "blue"
     },
     "template": {
       "metadata": {
         "labels": {
-          "app": "blue-deploy"
+          "app": "blue"
         }
       },
       "spec": {
         "containers": [
           {
-            "name": "blue-deploy",
-            "image": "laxgod77/testblueimage",
+            "name": "blue",
+            "image": "emjotpe/capstone_cloud_devops",
             "ports": [
               {
                 "name": "http-server",

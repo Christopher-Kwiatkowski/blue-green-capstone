@@ -44,7 +44,7 @@ pipeline {
                     // sh 'kubectl apply -f blue/blue-deploy.yaml'
                     // sleep(time:20,unit:"SECONDS")
                     // sh 'kubectl apply -f blue/blue-controller.json'
-                    sh 'kubectl set image --filename=blue-controller.json'
+                    sh "kubectl apply -f ./blue-controller.json"
                 }
             }
         }
