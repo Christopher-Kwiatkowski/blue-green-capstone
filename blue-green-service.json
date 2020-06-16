@@ -15,7 +15,7 @@
       }
     ],
     "selector": {
-      "app": "blue-deploy"
+      "app": "blue"
     },
     "type": "LoadBalancer"
   }

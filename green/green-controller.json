@@ -2,26 +2,26 @@
   "kind": "ReplicationController",
   "apiVersion": "v1",
   "metadata": {
-    "name": "green-deploy",
+    "name": "green",
     "labels": {
-      "app": "green-deploy"
+      "app": "green"
     }
   },
   "spec": {
     "replicas": 1,
     "selector": {
-      "app": "green-deploy"
+      "app": "green"
     },
     "template": {
       "metadata": {
         "labels": {
-          "app": "green-deploy"
+          "app": "green"
         }
       },
       "spec": {
         "containers": [
           {
-            "name": "green-deploy",
+            "name": "green",
             "image": "laxgod77/testgreenimage",
             "ports": [
               {
