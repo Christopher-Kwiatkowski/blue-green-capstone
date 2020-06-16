@@ -2,7 +2,7 @@
 docker build  --tag=testblueimage ./blue
 
 # Step 2: 
-# docker image ls
+docker image ls
 
-# # Step 3: 
-# docker run -p 8000:80 laxgod77/testblueimage
+# Step 3: 
+docker run -p 8000:80 laxgod77/testblueimage
