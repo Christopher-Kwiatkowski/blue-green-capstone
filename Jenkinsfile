@@ -16,9 +16,6 @@ pipeline {
             steps {
                 script {
                     echo "Build Docker Image"
-                    sh 'docker stop $(docker ps -q)'
-                    sh 'docker rm $(docker ps -a -q)'
-                    sh 'docker rmi $(docker images -q -f dangling=true)'
                     bluedockerImage = docker.build("laxgod77/testblueimage",'./blue')
                     greendockerImage = docker.build("laxgod77/testgreenimage",'./green')
                 }
