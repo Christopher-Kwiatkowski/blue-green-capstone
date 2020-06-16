@@ -26,7 +26,7 @@ pipeline {
                 script {
                     echo "Push Docker Image"
                     retry(2){
-                        docker.withRegistry('', "DockerHub") {
+                        docker.withRegistry('', "dockerhub") {
                             dockerImage.push()
                         }
                     }
