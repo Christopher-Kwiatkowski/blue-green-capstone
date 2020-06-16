@@ -1,5 +1,5 @@
 # Step 1:
-docker build blue --tag=testblueimage .
+docker build  --tag=testblueimage ./blue
 
 # Step 2: 
 # docker image ls
