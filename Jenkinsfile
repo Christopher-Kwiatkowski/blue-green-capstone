@@ -16,7 +16,8 @@ pipeline {
             steps {
                 script {
                     echo "Build Docker Image"
-                    dockerImage = docker.build("laxgod77/testblueimage:latest")
+                    dockerImage = sh '.blue/run-docker.sh'
+                    //  docker.build("laxgod77/testblueimage:latest")
                 }
             }
         }
