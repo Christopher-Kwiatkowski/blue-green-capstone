@@ -43,7 +43,8 @@ pipeline {
                     sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstonecluster'
                     // sh 'kubectl apply -f blue/blue-deploy.yaml'
                     sleep(time:20,unit:"SECONDS")
-                    sh 'kubectl apply -f blue/blue-controller.json'
+                    // sh 'kubectl apply -f blue/blue-controller.json'
+                    sh 'kubectl set image -f ./blue/blue-controller.json'
                 }
             }
         }
