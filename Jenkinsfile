@@ -38,6 +38,7 @@ pipeline {
         stage('Deploy blue container and create service') {
             steps {
                 withAWS(region:'us-west-2', credentials:'aws-static') {
+                  sh "aws eks --region us-west-2 update-kubeconfig --name capstonecluster"
                     sh 'kubectl config view'
                     sh 'kubectl config use-context arn:aws:eks:us-west-2:522853478682:cluster/capstonecluster'
                     sh 'kubectl apply -f blue/blue-deploy.yaml'
