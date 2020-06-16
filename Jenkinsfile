@@ -18,7 +18,6 @@ pipeline {
                     echo "Build Docker Image"
                     bluedockerImage = docker.build("laxgod77/testblueimage",'./blue')
                     greendockerImage = docker.build("laxgod77/testgreenimage",'./green')
-                    //  docker.build("laxgod77/testblueimage:latest")
                 }
             }
         }
@@ -53,6 +52,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy green container') {
             steps {
                 withAWS(region:'us-west-2', credentials:'aws-static') {
