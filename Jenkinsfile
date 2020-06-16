@@ -16,8 +16,9 @@ pipeline {
             steps {
                 script {
                     echo "Build Docker Image"
-                    sh 'docker ps -f name=testblueimage -q | xargs --no-run-if-empty docker container stop'
-                    sh 'docker container ls -a -f name=testblueimage -q | xargs -r docker container rm'
+                    sh 'docker stop $(docker ps -q)'
+                    sh 'docker rm $(docker ps -a -q)'
+                    sh 'docker rmi $(docker images -q -f dangling=true)'
                     bluedockerImage = docker.build("laxgod77/testblueimage",'./blue')
                     greendockerImage = docker.build("laxgod77/testgreenimage",'./green')
                 }
