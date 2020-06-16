@@ -60,12 +60,20 @@ pipeline {
                 }
             }
         }
-        stage('Create service') {
+        stage('Create blue service') {
             steps {
                 withAWS(region:'us-west-2', credentials:'aws-static') {
-                    sh 'kubectl apply -f ./blue-green-service.json'
+                    sh 'kubectl apply -f ./blue-service.json'
                     sh "kubectl get services"
-                    sh "kubectl describe pod"
+                }
+            }
+        }
+
+        stage('Create green service') {
+            steps {
+                withAWS(region:'us-west-2', credentials:'aws-static') {
+                    sh 'kubectl apply -f ./green-service.json'
+                    sh "kubectl get services"
                 }
             }
         }
