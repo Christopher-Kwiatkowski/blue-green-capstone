@@ -2,7 +2,7 @@
   "kind": "ReplicationController",
   "apiVersion": "v1",
   "metadata": {
-    "name": "blue-deploy",
+    "name": "blue",
     "labels": {
       "app": "blue"
     }
